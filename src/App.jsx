@@ -8,6 +8,11 @@ import ProfileEditForm from "./pages/ProfileEditForm";
 import Navbar from "./components/Navbar"; 
 import Settings from "./pages/Settings"; 
 import UserProfile from "./pages/UserProfile";
+import ProfileDetail from "./components/ProfileDetail";
+
+
+
+
 function App() {
   
   const isAuthenticated = () => {
@@ -57,6 +62,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+<Route 
+          path="/profile/:id" 
+          element={
+            <ProtectedRoute>
+              <ProfileDetail />
             </ProtectedRoute>
           } 
         />
