@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
 import Dashboard from "./pages/Dashboard";
-import ProfileEditForm from "./pages/ProfileEditForm";
+import ProfileEditForm from "./components/ProfileEditForm";
 import Navbar from "./components/Navbar"; 
 import Settings from "./pages/Settings"; 
 import UserProfile from "./pages/UserProfile";
