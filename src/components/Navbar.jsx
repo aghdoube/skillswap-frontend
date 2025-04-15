@@ -5,12 +5,13 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigate = useNavigate();
+  
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userName");
-    window.location.href = '/login'; 
-  };
+    localStorage.removeItem("userId"); 
+    navigate('/'); 
 
   return (
     <nav className="bg-blue-600 p-4">
