@@ -125,7 +125,7 @@ const ChatApp = ({ userId: propUserId }) => {
         setMessages(convo);
 
         convo.forEach((message) => {
-          if (message.receiver._id === userId && !message.read) {
+          if (message.receiver && message.receiver._id === userId && !message.read) {
             markMessageAsRead(message._id);
           }
         });
