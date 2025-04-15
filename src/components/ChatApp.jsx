@@ -1,21 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import io from 'socket.io-client';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import io from "socket.io-client";
+import { useParams } from "react-router-dom";
 
-const socket = io('http://localhost:5000'); 
+const socket = io("http://localhost:5000");
 
 const ChatApp = ({ userId: propUserId }) => {
-  const [userId, setUserId] = useState(() => propUserId || localStorage.getItem("userId"));
+  const [userId, setUserId] = useState(
+    () => propUserId || localStorage.getItem("userId")
+  );
   const { receiverId: routeReceiverId } = useParams();
 
   const [receiverId, setReceiverId] = useState(() => routeReceiverId || null);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
-  
+
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const ChatApp = ({ userId: propUserId }) => {
       try {
         setLoading(true);
         const token = localStorage.getItem("authToken");
-        
+
         if (!token) {
           setError("Authentication token not found. Please log in again.");
           setLoading(false);
@@ -47,9 +49,9 @@ const ChatApp = ({ userId: propUserId }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        
+
         if (Array.isArray(res.data)) {
-          const filteredUsers = res.data.filter(user => user._id !== userId);
+          const filteredUsers = res.data.filter((user) => user._id !== userId);
           setUsers(filteredUsers);
         } else {
           setError("Invalid response format received from server");
@@ -69,7 +71,7 @@ const ChatApp = ({ userId: propUserId }) => {
   useEffect(() => {
     if (!receiverId || !userId) return;
 
-    socket.emit('joinRoom', userId);
+    socket.emit("joinRoom", userId);
 
     const fetchMessages = async () => {
       try {
@@ -80,47 +82,47 @@ const ChatApp = ({ userId: propUserId }) => {
           return;
         }
 
-        const res = await axios.get('http://localhost:5000/api/messages', {
+        const res = await axios.get("http://localhost:5000/api/messages", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         const convo = res.data.filter(
-          msg =>
+          (msg) =>
             (msg.sender._id === userId && msg.receiver._id === receiverId) ||
             (msg.sender._id === receiverId && msg.receiver._id === userId)
         );
 
         setMessages(convo);
 
-        convo.forEach(message => {
+        convo.forEach((message) => {
           if (message.receiver._id === userId && !message.read) {
             markMessageAsRead(message._id);
           }
         });
       } catch (err) {
-        console.error('Error fetching messages:', err);
+        console.error("Error fetching messages:", err);
       }
     };
 
     fetchMessages();
 
-    socket.on('receiveMessage', (message) => {
+    socket.on("receiveMessage", (message) => {
       if (
         (message.sender === receiverId && message.receiver === userId) ||
         (message.sender === userId && message.receiver === receiverId)
       ) {
         setMessages((prev) => [...prev, message]);
-
+  
         if (message.receiver === userId && !message.read) {
           markMessageAsRead(message._id);
         }
       }
     });
-
+  
     return () => {
-      socket.off('receiveMessage');
+      socket.off("receiveMessage");
     };
   }, [receiverId, userId]);
 
@@ -130,44 +132,49 @@ const ChatApp = ({ userId: propUserId }) => {
     try {
       const token = localStorage.getItem("authToken");
 
-      await axios.post('http://localhost:5000/api/messages', 
+      await axios.post(
+        "http://localhost:5000/api/messages",
         { receiver: receiverId, text: newMessage },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      socket.emit('sendMessage', {
+      socket.emit("sendMessage", {
         sender: userId,
         receiver: receiverId,
         text: newMessage,
       });
 
-      setNewMessage('');
+      setNewMessage("");
     } catch (err) {
-      console.error('Error sending message:', err);
-      alert('Failed to send message. Please try again.');
+      console.error("Error sending message:", err);
+      alert("Failed to send message. Please try again.");
     }
   };
 
   const markMessageAsRead = async (messageId) => {
     try {
       const token = localStorage.getItem("authToken");
-      await axios.put(`http://localhost:5000/api/messages/read/${messageId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(
+        `http://localhost:5000/api/messages/read/${messageId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      socket.emit('markAsRead', messageId);
+      socket.emit("markAsRead", messageId);
     } catch (err) {
-      console.error('Error marking message as read:', err);
+      console.error("Error marking message as read:", err);
     }
   };
 
   const getSelectedUserName = () => {
-    const selectedUser = users.find(user => user._id === receiverId);
-    return selectedUser ? selectedUser.name : 'Selected User';
+    const selectedUser = users.find((user) => user._id === receiverId);
+    return selectedUser ? selectedUser.name : "Selected User";
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
@@ -187,9 +194,7 @@ const ChatApp = ({ userId: propUserId }) => {
                 key={user._id}
                 onClick={() => setReceiverId(user._id)}
                 className={`cursor-pointer px-4 py-2 rounded-md ${
-                  receiverId === user._id
-                    ? 'bg-gray-700'
-                    : 'hover:bg-gray-700'
+                  receiverId === user._id ? "bg-gray-700" : "hover:bg-gray-700"
                 }`}
               >
                 {user.name}
@@ -216,23 +221,25 @@ const ChatApp = ({ userId: propUserId }) => {
                   <div
                     key={index}
                     className={`mb-2 flex ${
-                      msg.sender._id === userId ? 'justify-end' : 'justify-start'
+                      msg.sender._id === userId
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
                     <div
                       className={`px-4 py-2 rounded-lg max-w-xs break-words text-sm ${
                         msg.sender._id === userId
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-white text-gray-800 shadow'
+                          ? "bg-blue-500 text-white"
+                          : "bg-white text-gray-800 shadow"
                       }`}
                     >
                       {msg.text}
                       <div className="text-[10px] text-right text-gray-400 mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
-                        {msg.sender._id === userId && msg.read && ' ✓'}
+                        {msg.sender._id === userId && msg.read && " ✓"}
                       </div>
                     </div>
                   </div>
@@ -246,7 +253,7 @@ const ChatApp = ({ userId: propUserId }) => {
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type a message"
                 className="flex-1 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
@@ -266,6 +273,6 @@ const ChatApp = ({ userId: propUserId }) => {
       </div>
     </div>
   );
-}
+};
 
 export default ChatApp;
