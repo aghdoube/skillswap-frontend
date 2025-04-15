@@ -26,7 +26,7 @@ const Dashboard = () => {
     }, 300); 
   
     return () => clearTimeout(debounceTimeout);
-  }, [searchTerm, skillFilter, locationFilter, filterType, userProfiles]);
+  }, [searchTerm, skillFilter, locationFilter, filterType,sortOption, userProfiles]);
   
 
   useEffect(() => {

@@ -42,7 +42,7 @@ const ProfileCard = ({ user }) => {
   const handleMessageUser = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/messages/new/${_id}`);
+    navigate(`/messages/${_id}`);
   };
 
   const getLevelColor = (level) => {
@@ -61,7 +61,7 @@ const ProfileCard = ({ user }) => {
   };
   
   return (
-    <div className="mx-auto bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="w-[370px] h-[450px] mx-auto bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
       <div className="relative">
         <div className="h-24 bg-gradient-to-r from-blue-500 to-purple-500"></div>
         
@@ -74,104 +74,57 @@ const ProfileCard = ({ user }) => {
         </div>
       </div>
       
-      <div className="pt-12 px-6 pb-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h2 className="text-xl font-bold text-gray-800">{name}</h2>
-            {location && (
-              <div className="flex items-center text-gray-600 mt-1">
-                <MapPin size={16} className="mr-1" />
-                <span className="text-sm">{location}</span>
+      <div className="pt-12 px-6 pb-6 flex-1 flex flex-col">
+        <div className="flex-1">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h2 className="text-xl font-bold text-gray-800">{name}</h2>
+              {location && (
+                <div className="flex items-center text-gray-600 mt-1">
+                  <MapPin size={16} className="mr-1" />
+                  <span className="text-sm">{location}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {bio && (
+            <div className="mb-4">
+              <p className="text-gray-600 text-sm line-clamp-2">{bio}</p>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            {primarySkillOffered && (
+              <div className="flex items-center">
+                <span className="text-xs font-medium mr-1">Offers:</span>
+                <span className={`text-xs px-2 py-1 rounded-full ${getLevelColor(primarySkillOffered.level)}`}>
+                  {primarySkillOffered.skill}
+                </span>
+              </div>
+            )}
+            
+            {primarySkillWanted && (
+              <div className="flex items-center">
+                <span className="text-xs font-medium mr-1">Wants:</span>
+                <span className={`text-xs px-2 py-1 rounded-full ${getLevelColor(primarySkillWanted.level)}`}>
+                  {primarySkillWanted.skill}
+                </span>
               </div>
             )}
           </div>
           
-          <div className="flex items-center text-gray-500">
-            <Calendar size={16} className="mr-1" />
-            <span className="text-xs">Member since {formattedDate}</span>
-          </div>
-        </div>
-        
-        {bio && (
-          <div className="mb-4">
-            <p className="text-gray-600 text-sm line-clamp-2">{bio}</p>
-          </div>
-        )}
-        
-        <div className="flex flex-wrap gap-2 mb-4">
-          {primarySkillOffered && (
-            <div className="flex items-center">
-              <span className="text-xs font-medium mr-1">Offers:</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${getLevelColor(primarySkillOffered.level)}`}>
-                {primarySkillOffered.skill}
-              </span>
-            </div>
-          )}
-          
-          {primarySkillWanted && (
-            <div className="flex items-center">
-              <span className="text-xs font-medium mr-1">Wants:</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${getLevelColor(primarySkillWanted.level)}`}>
-                {primarySkillWanted.skill}
-              </span>
+          {showContactInfo && email && (
+            <div className="bg-gray-50 p-3 rounded-lg mb-4">
+              <div className="flex items-center">
+                <Mail size={16} className="text-gray-600 mr-2" />
+                <span className="text-sm text-gray-800">{email}</span>
+              </div>
             </div>
           )}
         </div>
         
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Skills Offered</h3>
-            {skillsOffered && skillsOffered.length > 0 ? (
-              <ul className="text-gray-600 space-y-1">
-                {skillsOffered.slice(0, 3).map((skill, index) => (
-                  <li key={index} className="text-xs">
-                    {skill.skill} 
-                    <span className={`ml-1 px-1.5 py-0.5 rounded-full ${getLevelColor(skill.level)}`}>
-                      {skill.level}
-                    </span>
-                  </li>
-                ))}
-                {skillsOffered.length > 3 && (
-                  <li className="text-xs text-blue-600">+{skillsOffered.length - 3} more</li>
-                )}
-              </ul>
-            ) : (
-              <p className="text-xs text-gray-500">No skills offered</p>
-            )}
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Skills Wanted</h3>
-            {skillsWanted && skillsWanted.length > 0 ? (
-              <ul className="text-gray-600 space-y-1">
-                {skillsWanted.slice(0, 3).map((skill, index) => (
-                  <li key={index} className="text-xs">
-                    {skill.skill}
-                    <span className={`ml-1 px-1.5 py-0.5 rounded-full ${getLevelColor(skill.level)}`}>
-                      {skill.level}
-                    </span>
-                  </li>
-                ))}
-                {skillsWanted.length > 3 && (
-                  <li className="text-xs text-blue-600">+{skillsWanted.length - 3} more</li>
-                )}
-              </ul>
-            ) : (
-              <p className="text-xs text-gray-500">No skills wanted</p>
-            )}
-          </div>
-        </div>
-        
-        {showContactInfo && email && (
-          <div className="bg-gray-50 p-3 rounded-lg mb-4">
-            <div className="flex items-center">
-              <Mail size={16} className="text-gray-600 mr-2" />
-              <span className="text-sm text-gray-800">{email}</span>
-            </div>
-          </div>
-        )}
-        
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto">
           <button
             onClick={handleViewProfile}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition text-sm"
@@ -181,14 +134,14 @@ const ProfileCard = ({ user }) => {
           
           <button
             onClick={handleMessageUser}
-            className="flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded transition"
+            className="flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-3 rounded transition text-sm"
           >
             <MessageCircle size={18} />
           </button>
           
           <button
             onClick={handleContactToggle}
-            className="flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded transition"
+            className="flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-3 rounded transition text-sm"
           >
             <Mail size={18} />
           </button>

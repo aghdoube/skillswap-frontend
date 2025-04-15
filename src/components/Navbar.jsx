@@ -23,19 +23,25 @@ const Navbar = () => {
 
         <div className="hidden md:flex space-x-6 text-white">
           <Link to="/dashboard" className="hover:text-gray-200">
-            Dashboard
+          Marketplace
           </Link>
-          <Link to="/browse" className="hover:text-gray-200">
-            Browse
+          <Link to="/buzzfeed" className="hover:text-gray-200">
+            BuzzFeed
           </Link>
           <Link to="/profile" className="hover:text-gray-200">
-            Profile
+            My Profile
           </Link>
-          <Link to="/messages" className="hover:text-gray-200">
-            Messages
+          <Link to="/matchme" className="hover:text-gray-200">
+            Match Me
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings
+          </Link>
+          <Link to="/messages" className="hover:text-gray-200">
+            <i className="fas fa-comments" />
+          </Link>
+          <Link to="/notifications" className="hover:text-gray-200">
+            <i className="fas fa-bell" />
           </Link>
 
           <button 
@@ -59,19 +65,25 @@ const Navbar = () => {
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-blue-600 text-white`}>
         <div className="flex flex-col items-center py-4 space-y-4">
           <Link to="/dashboard" className="hover:text-gray-200">
-            Dashboard
+            Marketplace
           </Link>
-          <Link to="/browse" className="hover:text-gray-200">
-            Browse
+          <Link to="/buzzfeed" className="hover:text-gray-200">
+            BuzzFeed
           </Link>
           <Link to="/profile" className="hover:text-gray-200">
-            Profile
+            My Profile
           </Link>
-          <Link to="/messages" className="hover:text-gray-200">
-            Messages
+          <Link to="/matchme" className="hover:text-gray-200">
+            Match Me
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings
+          </Link>
+          <Link to="/messages" className="hover:text-gray-200">
+            <i className="fas fa-comments" />
+          </Link>
+          <Link to="/notifications" className="hover:text-gray-200">
+            <i className="fas fa-bell" />
           </Link>
 
           <button 
