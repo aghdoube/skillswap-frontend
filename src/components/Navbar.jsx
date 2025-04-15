@@ -12,6 +12,7 @@ const Navbar = () => {
     localStorage.removeItem("userName");
     localStorage.removeItem("userId"); 
     navigate('/'); 
+  }
 
   return (
     <nav className="bg-blue-600 p-4">
