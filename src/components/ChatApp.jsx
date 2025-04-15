@@ -113,8 +113,25 @@ const ChatApp = ({ userId: propUserId }) => {
         (message.sender === receiverId && message.receiver === userId) ||
         (message.sender === userId && message.receiver === receiverId)
       ) {
-        setMessages((prev) => [...prev, message]);
-  
+        setMessages((prev) => {
+          const isDuplicate = prev.some(msg => 
+            msg.text === message.text && 
+            ((msg.sender._id === message.sender) || (msg.sender === message.sender))
+          );
+          
+          if (isDuplicate) {
+            return prev;
+          }
+          
+          const normalizedMessage = {
+            ...message,
+            sender: { _id: message.sender },
+            receiver: { _id: message.receiver }
+          };
+          
+          return [...prev, normalizedMessage];
+        });
+    
         if (message.receiver === userId && !message.read) {
           markMessageAsRead(message._id);
         }
