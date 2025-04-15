@@ -4,8 +4,8 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation, // Use the useLocation hook to get current path
-} from "react-router-dom"; // Correct import for useLocation
+  useLocation, 
+} from "react-router-dom"; 
 import Home from "./pages/Home";
 import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
@@ -28,7 +28,7 @@ function App() {
 }
 
 function AppRoutes() {
-  const location = useLocation(); // Get the current location (path)
+  const location = useLocation(); 
 
   const isAuthenticated = () => {
     return localStorage.getItem("authToken") !== null;
@@ -43,7 +43,6 @@ function AppRoutes() {
 
   return (
     <>
-      {/* Only render Navbar if the current path is NOT '/' */}
       {location.pathname !== "/" && <Navbar />}
 
       <Routes>
@@ -110,7 +109,6 @@ function AppRoutes() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
-      {/* Always render Footer */}
       <Footer />
     </>
   );

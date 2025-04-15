@@ -19,10 +19,7 @@ const ProfileCard = ({ user }) => {
   const navigate = useNavigate();
   const [showContactInfo, setShowContactInfo] = useState(false);
   
-  const formattedDate = joinDate ? new Date(joinDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short'
-  }) : 'N/A';
+
   
   const primarySkillOffered = skillsOffered && skillsOffered.length > 0 ? skillsOffered[0] : null;
   const primarySkillWanted = skillsWanted && skillsWanted.length > 0 ? skillsWanted[0] : null;

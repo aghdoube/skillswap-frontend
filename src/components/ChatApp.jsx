@@ -3,7 +3,7 @@ import axios from 'axios';
 import io from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 
-const socket = io('http://localhost:5000'); // adjust if needed
+const socket = io('http://localhost:5000'); 
 
 const ChatApp = ({ userId: propUserId }) => {
   const [userId, setUserId] = useState(() => propUserId || localStorage.getItem("userId"));
@@ -18,21 +18,18 @@ const ChatApp = ({ userId: propUserId }) => {
   
   const messagesEndRef = useRef(null);
 
-  // Sync userId if propUserId changes
   useEffect(() => {
     if (propUserId && propUserId !== userId) {
       setUserId(propUserId);
     }
   }, [propUserId]);
 
-  // Sync receiverId from route param
   useEffect(() => {
     if (routeReceiverId && routeReceiverId !== receiverId) {
       setReceiverId(routeReceiverId);
     }
   }, [routeReceiverId]);
 
-  // Fetch all users except the current user
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -69,7 +66,6 @@ const ChatApp = ({ userId: propUserId }) => {
     fetchUsers();
   }, [userId]);
 
-  // Join room and fetch chat history when receiverId changes
   useEffect(() => {
     if (!receiverId || !userId) return;
 
@@ -98,7 +94,6 @@ const ChatApp = ({ userId: propUserId }) => {
 
         setMessages(convo);
 
-        // Mark messages as read
         convo.forEach(message => {
           if (message.receiver._id === userId && !message.read) {
             markMessageAsRead(message._id);
@@ -111,7 +106,6 @@ const ChatApp = ({ userId: propUserId }) => {
 
     fetchMessages();
 
-    // Listen for new messages
     socket.on('receiveMessage', (message) => {
       if (
         (message.sender === receiverId && message.receiver === userId) ||
@@ -130,7 +124,6 @@ const ChatApp = ({ userId: propUserId }) => {
     };
   }, [receiverId, userId]);
 
-  // Handle sending a message
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !receiverId) return;
 
@@ -155,7 +148,6 @@ const ChatApp = ({ userId: propUserId }) => {
     }
   };
 
-  // Mark message as read
   const markMessageAsRead = async (messageId) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -169,20 +161,17 @@ const ChatApp = ({ userId: propUserId }) => {
     }
   };
 
-  // Get selected user's name
   const getSelectedUserName = () => {
     const selectedUser = users.find(user => user._id === receiverId);
     return selectedUser ? selectedUser.name : 'Selected User';
   };
 
   useEffect(() => {
-    // Scroll to bottom when new messages are added
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
-      {/* Sidebar */}
       <div className="w-1/4 bg-gray-800 text-white p-4 overflow-y-auto">
         <h3 className="text-xl font-semibold mb-4">Users</h3>
         {loading ? (
@@ -210,16 +199,13 @@ const ChatApp = ({ userId: propUserId }) => {
         )}
       </div>
 
-      {/* Chat Box */}
       <div className="flex-1 flex flex-col bg-white">
         {receiverId ? (
           <>
-            {/* Chat Header */}
             <div className="p-4 border-b bg-gray-100 font-semibold text-lg">
               {getSelectedUserName()}
             </div>
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 bg-gray-200">
               {messages.length === 0 ? (
                 <p className="text-center text-gray-500 mt-10">
@@ -255,7 +241,6 @@ const ChatApp = ({ userId: propUserId }) => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Box */}
             <div className="flex items-center p-4 border-t bg-gray-100">
               <input
                 type="text"
