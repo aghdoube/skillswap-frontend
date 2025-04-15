@@ -108,16 +108,20 @@ const ChatApp = ({ userId: propUserId }) => {
 
     fetchMessages();
 
-    socket.on("receiveMessage", (message) => {
+    const handleReceiveMessage = (message) => {
       if (
         (message.sender === receiverId && message.receiver === userId) ||
         (message.sender === userId && message.receiver === receiverId)
       ) {
         setMessages((prev) => {
-          const isDuplicate = prev.some(msg => 
-            msg.text === message.text && 
-            ((msg.sender._id === message.sender) || (msg.sender === message.sender))
-          );
+          const isDuplicate = prev.some((msg) => {
+            const senderId = msg.sender._id || msg.sender;
+            const incomingSenderId = message.sender._id || message.sender;
+            
+            return msg.text === message.text && 
+                  senderId === incomingSenderId &&
+                  new Date(msg.createdAt).getTime() > Date.now() - 5000; 
+          });
           
           if (isDuplicate) {
             return prev;
@@ -125,8 +129,9 @@ const ChatApp = ({ userId: propUserId }) => {
           
           const normalizedMessage = {
             ...message,
-            sender: { _id: message.sender },
-            receiver: { _id: message.receiver }
+            sender: message.sender._id ? message.sender : { _id: message.sender },
+            receiver: message.receiver._id ? message.receiver : { _id: message.receiver },
+            createdAt: message.createdAt || new Date().toISOString()
           };
           
           return [...prev, normalizedMessage];
@@ -136,10 +141,12 @@ const ChatApp = ({ userId: propUserId }) => {
           markMessageAsRead(message._id);
         }
       }
-    });
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
   
     return () => {
-      socket.off("receiveMessage");
+      socket.off("receiveMessage", handleReceiveMessage);
     };
   }, [receiverId, userId]);
 
@@ -149,16 +156,20 @@ const ChatApp = ({ userId: propUserId }) => {
     try {
       const token = localStorage.getItem("authToken");
 
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:5000/api/messages",
         { receiver: receiverId, text: newMessage },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      const newMsg = response.data;
+      setMessages(prev => [...prev, newMsg]);
+
       socket.emit("sendMessage", {
         sender: userId,
         receiver: receiverId,
         text: newMessage,
+        createdAt: new Date().toISOString(),
       });
 
       setNewMessage("");
@@ -234,33 +245,36 @@ const ChatApp = ({ userId: propUserId }) => {
                   No messages yet. Start a conversation!
                 </p>
               ) : (
-                messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`mb-2 flex ${
-                      msg.sender._id === userId
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
+                messages.map((msg, index) => {
+                  const senderId = msg.sender._id || msg.sender;
+                  return (
                     <div
-                      className={`px-4 py-2 rounded-lg max-w-xs break-words text-sm ${
-                        msg.sender._id === userId
-                          ? "bg-blue-500 text-white"
-                          : "bg-white text-gray-800 shadow"
+                      key={index}
+                      className={`mb-2 flex ${
+                        senderId === userId
+                          ? "justify-end"
+                          : "justify-start"
                       }`}
                     >
-                      {msg.text}
-                      <div className="text-[10px] text-right text-gray-400 mt-1">
-                        {new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                        {msg.sender._id === userId && msg.read && " ✓"}
+                      <div
+                        className={`px-4 py-2 rounded-lg max-w-xs break-words text-sm ${
+                          senderId === userId
+                            ? "bg-blue-500 text-white"
+                            : "bg-white text-gray-800 shadow"
+                        }`}
+                      >
+                        {msg.text}
+                        <div className="text-[10px] text-right text-gray-400 mt-1">
+                          {new Date(msg.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          {senderId === userId && msg.read && " ✓"}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
               <div ref={messagesEndRef} />
             </div>
