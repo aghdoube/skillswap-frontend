@@ -127,12 +127,14 @@ const ChatApp = ({ userId: propUserId }) => {
         convo.forEach((message) => {
           if (message.receiver && message.receiver._id === userId && !message.read) {
             markMessageAsRead(message._id);
+            console.log(message);
           }
         });
         
         if (messageInputRef.current) {
           messageInputRef.current.focus();
         }
+        
       } catch (err) {
         console.error("Error fetching messages:", err);
         setError("Failed to load messages");
