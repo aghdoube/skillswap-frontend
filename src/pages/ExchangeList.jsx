@@ -9,7 +9,7 @@ const ExchangeList = () => {
   const navigate = useNavigate();
 
   const api = axios.create({
-    baseURL: "http://localhost:5000", 
+    baseURL: `${import.meta.env.VITE_API_URL}`,
   });
 
   const getReceiverId = (exchange) => {
@@ -88,7 +88,7 @@ const ExchangeList = () => {
     <div className="container p-4">
       <h2 className="text-xl font-bold mb-4">My Exchanges</h2>
       <StartExchange />
-      
+
       {!Array.isArray(exchanges) && <p>Loading exchanges...</p>}
       {Array.isArray(exchanges) && exchanges.length === 0 && <p>No exchanges yet.</p>}
       {Array.isArray(exchanges) &&

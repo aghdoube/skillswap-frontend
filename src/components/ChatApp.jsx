@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const socket = io("http://localhost:5000");
+const socket = io(API_URL);
 
 const ChatApp = ({ userId: propUserId }) => {
   const [userId, setUserId] = useState(
@@ -66,7 +66,7 @@ const ChatApp = ({ userId: propUserId }) => {
           return;
         }
 
-        const res = await axios.get("http://localhost:5000/api/auth/profiles", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profiles`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -128,7 +128,7 @@ const ChatApp = ({ userId: propUserId }) => {
           return;
         }
 
-        const res = await axios.get("http://localhost:5000/api/messages", {
+        const res = await axios.get("`${import.meta.env.VITE_API_URL}/api/messages", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -240,10 +240,11 @@ const ChatApp = ({ userId: propUserId }) => {
       setMessages(prev => [...prev, tempMessage]);
 
       const response = await axios.post(
-        "http://localhost:5000/api/messages",
+        `${import.meta.env.VITE_API_URL}/api/messages`,
         { receiver: receiverId, text: messageText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
 
       setMessages((prev) => {
         return prev.map((msg) =>
@@ -270,7 +271,7 @@ const ChatApp = ({ userId: propUserId }) => {
     try {
       const token = localStorage.getItem("authToken");
       await axios.put(
-        `http://localhost:5000/api/messages/read/${messageId}`,
+        `${import.meta.env.VITE_API_URL}/api/messages/read/${messageId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
