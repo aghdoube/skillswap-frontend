@@ -1,6 +1,69 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { MapPin, Mail, MessageCircle, Book, Award, ChevronRight, X, User } from 'lucide-react';
+
+import axios from "axios";
+
+const renderSkillLevelBadge = (level) => {
+  let levelText = "";
+
+  const numericLevel = Number(level);
+  const isNumeric = !isNaN(numericLevel);
+
+  if (isNumeric) {
+    if (numericLevel <= 2) levelText = "Beginner";
+    else if (numericLevel <= 4) levelText = "Basic";
+    else if (numericLevel <= 6) levelText = "Intermediate";
+    else if (numericLevel <= 8) levelText = "Advanced";
+    else levelText = "Expert";
+  } else {
+    levelText = level;
+  }
+
+  switch (levelText.toLowerCase()) {
+    case "beginner":
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1" />
+          Beginner
+        </span>
+      );
+    case "basic":
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1" />
+          Basic
+        </span>
+      );
+    case "intermediate":
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+          <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-1" />
+          Intermediate
+        </span>
+      );
+    case "advanced":
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+          <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mr-1" />
+          Advanced
+        </span>
+      );
+    case "expert":
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          <div className="w-1.5 h-1.5 rounded-full bg-red-500 mr-1" />
+          Expert
+        </span>
+      );
+    default:
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+          {levelText || "Unknown"}
+        </span>
+      );
+  }
+};
 
 const ProfileDetail = () => {
   const [profile, setProfile] = useState(null);
@@ -13,21 +76,19 @@ const ProfileDetail = () => {
     const fetchProfileDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/profile/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-            
-          },
-          
-
-        });
-       
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/auth/profile/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          }
+        );
         setProfile(response.data);
-        console.log(localStorage.getItem('authToken'));
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching profile details:', err);
-        setError('Failed to load profile details. Please try again later.');
+        console.error("Error fetching profile details:", err);
+        setError("Failed to load profile details. Please try again later.");
         setLoading(false);
       }
     };
@@ -51,7 +112,7 @@ const ProfileDetail = () => {
     return (
       <div className="p-8">
         <div className="text-red-500 mb-4">{error}</div>
-        <button 
+        <button
           onClick={handleGoBack}
           className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
         >
@@ -65,7 +126,7 @@ const ProfileDetail = () => {
     return (
       <div className="p-8">
         <div className="text-xl mb-4">Profile not found</div>
-        <button 
+        <button
           onClick={handleGoBack}
           className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
         >
@@ -75,49 +136,65 @@ const ProfileDetail = () => {
     );
   }
 
-  const { name, profilePic, bio, email, location, skillsOffered, skillsWanted, availability, contactInfo } = profile;
+  const {
+    name,
+    profilePic,
+    bio,
+    location,
+    skillsOffered,
+    skillsWanted,
+    availability,
+    contactInfo,
+  } = profile;
   const defaultProfilePic = "/assets/DefaultPic.png";
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <button 
+    <div className="max-w-6xl mx-auto p-8">
+      <button
         onClick={handleGoBack}
         className="mb-6 bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded"
       >
         ← Back to Dashboard
       </button>
 
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div
+        className="bg-white shadow-lg rounded-lg overflow-hidden border-t-[100px] border-transparent"
+        style={{
+          borderImage: "linear-gradient(to right, #2563eb, #9333ea)",
+          borderImageSlice: 1,
+        }}
+      >
         <div className="md:flex">
-          <div className="md:w-1/3 p-6 flex flex-col items-center border-r border-gray-200">
+          <div className="md:w-1/3 p-6 flex flex-col items-center border-r border-gray-200 bg-gradient-to-r from-blue-50 to-blue-100">
             <img
               src={profilePic || defaultProfilePic}
               alt={`${name}'s profile`}
-              className="w-40 h-40 rounded-full object-cover mb-4"
+              className="w-40 h-40 rounded-full object-cover mb-4 border-4 border-white shadow-md"
             />
-            <h1 className="text-2xl font-bold text-center">{name}</h1>
-            {location && <p className="text-gray-600 mt-2">{location}</p>}
+            <h1 className="text-2xl font-bold text-center text-gray-800">
+              {name}
+            </h1>
+            {location && (
+            <div className="flex items-center justify-center text-gray-500 mt-1">
+              <MapPin size={15} className="mr-1" />
+              <span className="text-sm">{location}</span>
+            </div>
+          )}
           </div>
 
           <div className="md:w-2/3 p-6">
             <div className="mb-6">
-              <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">About</h2>
+              <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">
+                About
+              </h2>
               <p className="text-gray-700">{bio || "No bio available."}</p>
-            </div>
-
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">Contact Information</h2>
-              <p className="text-gray-700"><strong>Email:</strong> {email}</p>
-              {contactInfo && Object.entries(contactInfo).map(([key, value]) => (
-                <p key={key} className="text-gray-700">
-                  <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {value}
-                </p>
-              ))}
             </div>
 
             {availability && (
               <div className="mb-6">
-                <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">Availability</h2>
+                <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">
+                  Availability
+                </h2>
                 <p className="text-gray-700">{availability}</p>
               </div>
             )}
@@ -128,22 +205,27 @@ const ProfileDetail = () => {
 
         <div className="md:flex">
           <div className="md:w-1/2 p-6 border-r border-gray-200">
-            <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">Skills Offered</h2>
+            <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">
+              Skills Offered
+            </h2>
             {skillsOffered && skillsOffered.length > 0 ? (
               <ul className="text-gray-700">
                 {skillsOffered.map((skill, index) => (
-                  <li key={index} className="mb-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="font-semibold">{skill.skill}</div>
-                    <div className="flex items-center mt-1">
-                      <span className="mr-2">Level: {skill.level}/10</span>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full" 
-                          style={{ width: `${(skill.level / 10) * 100}%` }}
-                        ></div>
-                      </div>
+                  <li
+                    key={index}
+                    className="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm"
+                  >
+                    <div className="font-semibold text-gray-800">
+                      {skill.skill}
                     </div>
-                    {skill.description && <p className="mt-2 text-sm text-gray-600">{skill.description}</p>}
+                    <div className="mt-2">
+                      {renderSkillLevelBadge(skill.level)}
+                    </div>
+                    {skill.description && (
+                      <p className="mt-2 text-sm text-gray-600">
+                        {skill.description}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -153,22 +235,27 @@ const ProfileDetail = () => {
           </div>
 
           <div className="md:w-1/2 p-6">
-            <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">Skills Wanted</h2>
+            <h2 className="text-xl font-semibold border-b border-gray-200 pb-2 mb-4">
+              Skills Wanted
+            </h2>
             {skillsWanted && skillsWanted.length > 0 ? (
               <ul className="text-gray-700">
                 {skillsWanted.map((skill, index) => (
-                  <li key={index} className="mb-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="font-semibold">{skill.skill}</div>
-                    <div className="flex items-center mt-1">
-                      <span className="mr-2">Level: {skill.level}/10</span>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-green-500 h-2 rounded-full" 
-                          style={{ width: `${(skill.level / 10) * 100}%` }}
-                        ></div>
-                      </div>
+                  <li
+                    key={index}
+                    className="mb-4 p-4 bg-gray-50 rounded-lg shadow-sm"
+                  >
+                    <div className="font-semibold text-gray-800">
+                      {skill.skill}
                     </div>
-                    {skill.description && <p className="mt-2 text-sm text-gray-600">{skill.description}</p>}
+                    <div className="mt-2">
+                      {renderSkillLevelBadge(skill.level)}
+                    </div>
+                    {skill.description && (
+                      <p className="mt-2 text-sm text-gray-600">
+                        {skill.description}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -40,22 +40,32 @@ const Dashboard = () => {
         });
         setUserProfiles(response.data);
         setFilteredProfiles(response.data);
-        
+  
         const skills = new Set();
         const locations = new Set();
-        
+  
         response.data.forEach(user => {
           if (user.location) locations.add(user.location);
-          
+  
+          // Check if skillsOffered exists and is an array
           if (user.skillsOffered) {
-            user.skillsOffered.forEach(skill => skills.add(skill.skill));
+            user.skillsOffered.forEach(skillObj => {
+              if (skillObj.skill && skillObj.skill.name) {
+                skills.add(skillObj.skill.name);  // Only add the name if it exists
+              }
+            });
           }
-          
+  
+          // Check if skillsWanted exists and is an array
           if (user.skillsWanted) {
-            user.skillsWanted.forEach(skill => skills.add(skill.skill));
+            user.skillsWanted.forEach(skillObj => {
+              if (skillObj.skill && skillObj.skill.name) {
+                skills.add(skillObj.skill.name);  // Only add the name if it exists
+              }
+            });
           }
         });
-        
+  
         setAvailableSkills(Array.from(skills).sort());
         setAvailableLocations(Array.from(locations).sort());
       } catch (err) {
@@ -65,9 +75,11 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    
+  
     fetchUserProfiles();
   }, []);
+  
+  
 
   useEffect(() => {
     filterProfiles();

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import NotificationDropdown from './NotificationDropdown';
-
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userName");
     localStorage.removeItem("userId"); 
     navigate('/'); 
-  }
+  };
 
   return (
-    <nav className="bg-blue-600 p-4">
+    <nav className="bg-gradient-to-r from-purple-600 to-blue-600 p-5">
       <div className="container mx-auto flex justify-between items-center">
+        
         <div className="flex items-center">
           <Link to="/" className="text-white text-2xl font-semibold">
             SkillSwap
@@ -26,7 +26,7 @@ const Navbar = () => {
 
         <div className="hidden md:flex space-x-6 text-white">
           <Link to="/dashboard" className="hover:text-gray-200">
-          Marketplace
+            Marketplace
           </Link>
           <Link to="/buzzfeed" className="hover:text-gray-200">
             BuzzFeed
@@ -65,7 +65,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-blue-600 text-white`}>
+      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white`}>
         <div className="flex flex-col items-center py-4 space-y-4">
           <Link to="/dashboard" className="hover:text-gray-200">
             Marketplace
