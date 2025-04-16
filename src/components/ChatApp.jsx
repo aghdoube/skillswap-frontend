@@ -3,6 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { useParams } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
 const socket = io("http://localhost:5000");
 
 const ChatApp = ({ userId: propUserId }) => {
@@ -23,6 +24,27 @@ const ChatApp = ({ userId: propUserId }) => {
   const messagesEndRef = useRef(null);
   const messageInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+
+  // Add this helper function at the top level of your component
+  const normalizeDate = (dateValue) => {
+    if (!dateValue) {
+      return new Date().toISOString(); // Use current time as fallback
+    }
+
+    // If it's already a valid date string, return it
+    const date = new Date(dateValue);
+    if (!isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    // If it's a timestamp (number)
+    if (typeof dateValue === "number") {
+      return new Date(dateValue).toISOString();
+    }
+
+    // Default fallback
+    return new Date().toISOString();
+  };
 
   useEffect(() => {
     if (propUserId && propUserId !== userId) {
@@ -57,9 +79,9 @@ const ChatApp = ({ userId: propUserId }) => {
         if (Array.isArray(res.data)) {
           const filteredUsers = res.data.filter((user) => user._id !== userId);
           setUsers(filteredUsers);
-          
+
           const onlineStatus = {};
-          filteredUsers.forEach(user => {
+          filteredUsers.forEach((user) => {
             onlineStatus[user._id] = false;
           });
           setIsOnline(onlineStatus);
@@ -76,19 +98,19 @@ const ChatApp = ({ userId: propUserId }) => {
     };
 
     fetchUsers();
-    
+
     socket.emit("userOnline", userId);
-    
+
     socket.on("onlineUsers", (onlineUsers) => {
-      setIsOnline(prev => {
-        const newStatus = {...prev};
+      setIsOnline((prev) => {
+        const newStatus = { ...prev };
         for (const id in newStatus) {
           newStatus[id] = onlineUsers.includes(id);
         }
         return newStatus;
       });
     });
-    
+
     return () => {
       socket.off("onlineUsers");
     };
@@ -98,7 +120,7 @@ const ChatApp = ({ userId: propUserId }) => {
     if (!receiverId || !userId) return;
 
     socket.emit("joinRoom", userId);
-    
+
     setTypingStatus(false);
 
     const fetchMessages = async () => {
@@ -125,16 +147,19 @@ const ChatApp = ({ userId: propUserId }) => {
         setMessages(convo);
 
         convo.forEach((message) => {
-          if (message.receiver && message.receiver._id === userId && !message.read) {
+          if (
+            message.receiver &&
+            message.receiver._id === userId &&
+            !message.read
+          ) {
             markMessageAsRead(message._id);
             console.log(message);
           }
         });
-        
+
         if (messageInputRef.current) {
           messageInputRef.current.focus();
         }
-        
       } catch (err) {
         console.error("Error fetching messages:", err);
         setError("Failed to load messages");
@@ -150,8 +175,8 @@ const ChatApp = ({ userId: propUserId }) => {
       ) {
         setMessages((prev) => {
           const isDuplicate = prev.some((msg) => {
-            const senderId = msg.sender._id || msg.sender;
-            const incomingSenderId = message.sender._id || message.sender;
+            const senderId = msg.sender && msg.sender._id ? msg.sender._id : msg.sender;
+            const incomingSenderId = message.sender && message.sender._id ? message.sender._id : message.sender;
             
             return msg.text === message.text && 
                   senderId === incomingSenderId &&
@@ -164,9 +189,9 @@ const ChatApp = ({ userId: propUserId }) => {
           
           const normalizedMessage = {
             ...message,
-            sender: message.sender._id ? message.sender : { _id: message.sender },
-            receiver: message.receiver._id ? message.receiver : { _id: message.receiver },
-            createdAt: message.createdAt || new Date().toISOString()
+            sender: message.sender && message.sender._id ? message.sender : { _id: message.sender },
+            receiver: message.receiver && message.receiver._id ? message.receiver : { _id: message.receiver },
+            createdAt: normalizeDate(message.createdAt)
           };
           
           return [...prev, normalizedMessage];
@@ -186,7 +211,7 @@ const ChatApp = ({ userId: propUserId }) => {
 
     socket.on("receiveMessage", handleReceiveMessage);
     socket.on("typingStatus", handleTypingStatus);
-  
+
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
       socket.off("typingStatus", handleTypingStatus);
@@ -195,7 +220,7 @@ const ChatApp = ({ userId: propUserId }) => {
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !receiverId) return;
-
+  
     try {
       const token = localStorage.getItem("authToken");
       const messageText = newMessage.trim();
@@ -203,14 +228,16 @@ const ChatApp = ({ userId: propUserId }) => {
       setNewMessage("");
       
       handleTypingStop();
-
+  
+      const currentTime = new Date().toISOString();
+      
       const tempMessage = {
         _id: `temp-${Date.now()}`,
         sender: { _id: userId },
         receiver: { _id: receiverId },
         text: messageText,
         read: false,
-        createdAt: new Date().toISOString(),
+        createdAt: currentTime,
         isTemp: true 
       };
       
@@ -222,9 +249,9 @@ const ChatApp = ({ userId: propUserId }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setMessages(prev => {
-        return prev.map(msg => 
-          (msg.isTemp && msg.text === messageText) ? response.data : msg
+      setMessages((prev) => {
+        return prev.map((msg) =>
+          msg.isTemp && msg.text === messageText ? response.data : msg
         );
       });
 
@@ -237,8 +264,8 @@ const ChatApp = ({ userId: propUserId }) => {
       });
     } catch (err) {
       console.error("Error sending message:", err);
-      
-      setMessages(prev => prev.filter(msg => !msg.isTemp));
+
+      setMessages((prev) => prev.filter((msg) => !msg.isTemp));
       alert("Failed to send message. Please try again.");
     }
   };
@@ -254,9 +281,9 @@ const ChatApp = ({ userId: propUserId }) => {
         }
       );
 
-      setMessages(prev => 
-        prev.map(msg => 
-          msg._id === messageId ? {...msg, read: true} : msg
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === messageId ? { ...msg, read: true } : msg
         )
       );
 
@@ -270,25 +297,25 @@ const ChatApp = ({ userId: propUserId }) => {
     socket.emit("typing", {
       sender: userId,
       receiver: receiverId,
-      isTyping: true
+      isTyping: true,
     });
-    
+
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     typingTimeoutRef.current = setTimeout(handleTypingStop, 2000);
   };
-  
+
   const handleTypingStop = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     socket.emit("typing", {
       sender: userId,
       receiver: receiverId,
-      isTyping: false
+      isTyping: false,
     });
   };
 
@@ -300,27 +327,52 @@ const ChatApp = ({ userId: propUserId }) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  
-  const filteredUsers = users.filter(user => 
+
+  const filteredUsers = users.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatMessageDate = (date) => {
-    const messageDate = new Date(date);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    if (messageDate.toDateString() === today.toDateString()) {
-      return "Today";
-    } else if (messageDate.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
-    } else {
-      return messageDate.toLocaleDateString();
+  const formatMessageDate = (dateStr) => {
+    try {
+      const messageDate = new Date(dateStr);
+      
+      // Check if date is valid
+      if (isNaN(messageDate.getTime())) {
+        console.warn("Invalid date encountered:", dateStr);
+        return "Recent";
+      }
+      
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (messageDate.toDateString() === today.toDateString()) {
+        return "Today";
+      } else if (messageDate.toDateString() === yesterday.toDateString()) {
+        return "Yesterday";
+      } else {
+        return messageDate.toLocaleDateString(undefined, {
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric'
+        });
+      }
+    } catch (error) {
+      console.error("Date formatting error:", error);
+      return "Recent";
     }
   };
-  
+
   const groupedMessages = messages.reduce((groups, message) => {
+    if (!message.createdAt) {
+      const date = "Recent";
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(message);
+      return groups;
+    }
+  
     const date = formatMessageDate(message.createdAt);
     if (!groups[date]) {
       groups[date] = [];
@@ -333,7 +385,7 @@ const ChatApp = ({ userId: propUserId }) => {
     <div className="flex h-screen font-sans bg-gray-100">
       <div className="w-1/4 bg-gray-800 text-white p-4 flex flex-col">
         <h3 className="text-xl font-semibold mb-4">Conversations</h3>
-        
+
         <div className="mb-4">
           <input
             type="text"
@@ -343,7 +395,7 @@ const ChatApp = ({ userId: propUserId }) => {
             className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
           />
         </div>
-        
+
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex justify-center items-center h-20">
@@ -360,8 +412,8 @@ const ChatApp = ({ userId: propUserId }) => {
                   key={user._id}
                   onClick={() => setReceiverId(user._id)}
                   className={`cursor-pointer px-4 py-3 rounded-md transition-all flex items-center justify-between ${
-                    receiverId === user._id 
-                      ? "bg-blue-600" 
+                    receiverId === user._id
+                      ? "bg-blue-600"
                       : "hover:bg-gray-700"
                   }`}
                 >
@@ -370,16 +422,16 @@ const ChatApp = ({ userId: propUserId }) => {
                       <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-lg font-medium">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
-                      <span 
+                      <span
                         className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ${
-                          isOnline[user._id] ? 'bg-green-500' : 'bg-gray-500'
+                          isOnline[user._id] ? "bg-green-500" : "bg-gray-500"
                         } border-2 border-gray-800`}
                       />
                     </div>
                     <div className="ml-3">
                       <p className="font-medium">{user.name}</p>
                       <p className="text-xs text-gray-400">
-                        {isOnline[user._id] ? 'Online' : 'Offline'}
+                        {isOnline[user._id] ? "Online" : "Offline"}
                       </p>
                     </div>
                   </div>
@@ -399,9 +451,11 @@ const ChatApp = ({ userId: propUserId }) => {
                   {getSelectedUserName().charAt(0).toUpperCase()}
                 </div>
                 <div className="ml-3">
-                  <p className="font-semibold text-lg">{getSelectedUserName()}</p>
+                  <p className="font-semibold text-lg">
+                    {getSelectedUserName()}
+                  </p>
                   <p className="text-xs text-gray-500">
-                    {isOnline[receiverId] ? 'Online' : 'Offline'}
+                    {isOnline[receiverId] ? "Online" : "Offline"}
                   </p>
                 </div>
               </div>
@@ -411,12 +465,24 @@ const ChatApp = ({ userId: propUserId }) => {
               {messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-gray-500">
                   <div className="w-16 h-16 mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                   </div>
                   <p className="text-center">No messages yet.</p>
-                  <p className="text-center text-sm">Say hello to start the conversation!</p>
+                  <p className="text-center text-sm">
+                    Say hello to start the conversation!
+                  </p>
                 </div>
               ) : (
                 Object.entries(groupedMessages).map(([date, msgs]) => (
@@ -426,14 +492,25 @@ const ChatApp = ({ userId: propUserId }) => {
                         {date}
                       </span>
                     </div>
-                    
+
                     {msgs.map((msg, index) => {
-                      const senderId = msg.sender._id || msg.sender;
+                      const senderId =
+                        msg.sender && msg.sender._id
+                          ? msg.sender._id
+                          : typeof msg.sender === "string"
+                          ? msg.sender
+                          : undefined;
                       const isCurrentUser = senderId === userId;
                       const prevMsg = index > 0 ? msgs[index - 1] : null;
-                      const prevSenderId = prevMsg ? (prevMsg.sender._id || prevMsg.sender) : null;
+                      const prevSenderId = prevMsg
+                        ? prevMsg.sender && prevMsg.sender._id
+                          ? prevMsg.sender._id
+                          : typeof prevMsg.sender === "string"
+                          ? prevMsg.sender
+                          : undefined
+                        : null;
                       const showAvatar = !prevMsg || prevSenderId !== senderId;
-                      
+
                       return (
                         <div
                           key={msg._id || index}
@@ -446,7 +523,7 @@ const ChatApp = ({ userId: propUserId }) => {
                               {getSelectedUserName().charAt(0).toUpperCase()}
                             </div>
                           )}
-                          
+
                           <div
                             className={`px-4 py-2 rounded-lg max-w-xs break-words text-sm ${
                               isCurrentUser
@@ -456,15 +533,37 @@ const ChatApp = ({ userId: propUserId }) => {
                           >
                             {msg.text}
                             <div className="text-[10px] text-right mt-1 flex justify-end items-center gap-1">
-                              <span className={isCurrentUser ? "text-blue-100" : "text-gray-400"}>
-                                {new Date(msg.createdAt).toLocaleTimeString([], {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
+                              <span
+                                className={
+                                  isCurrentUser
+                                    ? "text-blue-100"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {msg.createdAt &&
+                                !isNaN(new Date(msg.createdAt).getTime())
+                                  ? new Date(msg.createdAt).toLocaleTimeString(
+                                      [],
+                                      {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      }
+                                    )
+                                  : "Just now"}
                               </span>
                               {isCurrentUser && msg.read && (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                  <path d="M20 6L9 17l-5-5"/>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="12"
+                                  height="12"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M20 6L9 17l-5-5" />
                                 </svg>
                               )}
                             </div>
@@ -475,7 +574,7 @@ const ChatApp = ({ userId: propUserId }) => {
                   </div>
                 ))
               )}
-              
+
               {typingStatus && (
                 <div className="flex items-center mt-2 ml-2">
                   <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium mr-2">
@@ -483,14 +582,23 @@ const ChatApp = ({ userId: propUserId }) => {
                   </div>
                   <div className="bg-gray-200 px-3 py-2 rounded-lg inline-flex">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                      <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "200ms" }}></div>
-                      <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: "400ms" }}></div>
+                      <div
+                        className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "200ms" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"
+                        style={{ animationDelay: "400ms" }}
+                      ></div>
                     </div>
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
 
@@ -504,7 +612,9 @@ const ChatApp = ({ userId: propUserId }) => {
                     setNewMessage(e.target.value);
                     handleTyping();
                   }}
-                  onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && !e.shiftKey && handleSendMessage()
+                  }
                   onBlur={handleTypingStop}
                   placeholder="Type a message"
                   className="flex-1 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -516,7 +626,17 @@ const ChatApp = ({ userId: propUserId }) => {
                     !newMessage.trim() ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                   </svg>
@@ -527,7 +647,17 @@ const ChatApp = ({ userId: propUserId }) => {
         ) : (
           <div className="flex flex-col items-center justify-center flex-1 text-gray-500 p-6">
             <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
             </div>
