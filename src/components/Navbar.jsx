@@ -34,7 +34,7 @@ const Navbar = () => {
           <Link to="/profile" className="hover:text-gray-200">
             My Profile
           </Link>
-          <Link to="/matchme" className="hover:text-gray-200">
+          <Link to="/exchanges" className="hover:text-gray-200">
             Match Me
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
@@ -76,7 +76,7 @@ const Navbar = () => {
           <Link to="/profile" className="hover:text-gray-200">
             My Profile
           </Link>
-          <Link to="/matchme" className="hover:text-gray-200">
+          <Link to="/exchanges" className="hover:text-gray-200">
             Match Me
           </Link>
           <Link to="/settings" className="hover:text-gray-200">

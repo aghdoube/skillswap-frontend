@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
+
+
+const token = localStorage.getItem('authToken')
 const API_URL = import.meta.env.VITE_API_URL;
 const socket = io(API_URL, {
   transports: ['websocket'], 
@@ -13,7 +16,12 @@ export function useNotifications(userId) {
 
   useEffect(() => {
     if (!userId) return;
-    axios.get(`${API_URL}/api/notifications/${userId}`)
+    axios.get(`${API_URL}/api/notifications/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true, 
+    })
       .then(res => setNotifications(res.data))
       .catch(err => console.error(err));
   }, [userId]);

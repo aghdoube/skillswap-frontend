@@ -4,8 +4,8 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation, 
-} from "react-router-dom"; 
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import LoginForm from "./components/LoginForm";
 import Signup from "./components/Signup";
@@ -18,6 +18,7 @@ import ProfileDetail from "./components/ProfileDetail";
 import BuzzFeed from "./pages/BuzzFeed";
 import Footer from "./components/Footer";
 import ChatApp from "./components/ChatApp";
+import ExchangeList from "./pages/ExchangeList";
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
 }
 
 function AppRoutes() {
-  const location = useLocation(); 
+  const location = useLocation();
 
   const isAuthenticated = () => {
     return localStorage.getItem("authToken") !== null;
@@ -103,6 +104,14 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <UserProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/exchanges"
+          element={
+            <ProtectedRoute>
+              <ExchangeList />
             </ProtectedRoute>
           }
         />

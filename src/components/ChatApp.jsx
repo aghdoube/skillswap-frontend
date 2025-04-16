@@ -25,24 +25,20 @@ const ChatApp = ({ userId: propUserId }) => {
   const messageInputRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
-  // Add this helper function at the top level of your component
   const normalizeDate = (dateValue) => {
     if (!dateValue) {
-      return new Date().toISOString(); // Use current time as fallback
+      return new Date().toISOString(); 
     }
 
-    // If it's already a valid date string, return it
     const date = new Date(dateValue);
     if (!isNaN(date.getTime())) {
       return dateValue;
     }
 
-    // If it's a timestamp (number)
     if (typeof dateValue === "number") {
       return new Date(dateValue).toISOString();
     }
 
-    // Default fallback
     return new Date().toISOString();
   };
 
@@ -336,7 +332,6 @@ const ChatApp = ({ userId: propUserId }) => {
     try {
       const messageDate = new Date(dateStr);
       
-      // Check if date is valid
       if (isNaN(messageDate.getTime())) {
         console.warn("Invalid date encountered:", dateStr);
         return "Recent";
