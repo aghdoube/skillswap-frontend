@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import NotificationDropdown from './NotificationDropdown';
 
 
 const Navbar = () => {
@@ -42,8 +43,8 @@ const Navbar = () => {
           <Link to="/messages" className="hover:text-gray-200">
             <i className="fas fa-comments" />
           </Link>
-          <Link to="/notifications" className="hover:text-gray-200">
-            <i className="fas fa-bell" />
+          <Link to="#" className="hover:text-gray-200">
+            <NotificationDropdown userId={localStorage.getItem("userId")} />
           </Link>
 
           <button 
