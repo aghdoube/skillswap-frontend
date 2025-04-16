@@ -61,6 +61,42 @@ const ReviewPage = ({ userId = "123" }) => {
           likes: 12,
           skillsExchanged: ["Photography", "Financial Planning"],
         },
+        {
+          id: 3,
+          authorId: "101",
+          authorName: "Jordan Lee",
+          authorAvatar: "/assets/DefaultPic.png",
+          rating: 5,
+          date: "2024-01-20",
+          comment: "I learned so much during our photography sessions. Alex has a great eye for composition and explains technical concepts in an accessible way.",
+          recommendation: "Perfect for anyone wanting to learn composition and lighting techniques.",
+          likes: 12,
+          skillsExchanged: ["Photography", "Financial Planning"],
+        },
+        {
+          id: 4,
+          authorId: "102",
+          authorName: "Lena Park",
+          authorAvatar: "/assets/DefaultPic.png",
+          rating: 4,
+          date: "2024-02-10",
+          comment: "Jamie was super patient teaching me German basics. Loved the interactive style and cultural insights!",
+          recommendation: "Highly recommend for anyone starting out with a new language.",
+          likes: 9,
+          skillsExchanged: ["German", "Yoga"],
+        },
+        {
+          id: 5,
+          authorId: "103",
+          authorName: "Marco Rivera",
+          authorAvatar: "/assets/DefaultPic.png",
+          rating: 5,
+          date: "2024-03-03",
+          comment: "Katy’s science explanations were so clear, even over video! And she really helped me understand tricky chemistry topics.",
+          recommendation: "Ideal if you're looking for a fun and effective tutor in science.",
+          likes: 15,
+          skillsExchanged: ["High School Chemistry", "Digital Illustration"],
+        }
       ];
 
       setReviews(mockReviews);
