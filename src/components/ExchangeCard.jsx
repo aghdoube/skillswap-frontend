@@ -16,7 +16,7 @@ const ExchangeCard = ({
 
   return (
     <div className="border rounded p-4 mb-3 shadow-sm">
-      <p><strong>Skill:</strong> {exchange.skill.title}</p>
+      <p><strong>Skill:</strong> {exchange.skill}</p>
       <p><strong>With:</strong> {otherUser}</p>
       <p><strong>Status:</strong> {exchange.status}</p>
 

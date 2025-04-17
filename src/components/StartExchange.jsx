@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
 
-const StartExchange = () => {
+const StartExchange = ({ userId = undefined }) => {
   const [skills, setSkills] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedSkill, setSelectedSkill] = useState("");
-  const [selectedProvider, setSelectedProvider] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState(userId || "");
   const [message, setMessage] = useState("");
 
   const location = useLocation();
@@ -17,6 +17,8 @@ const StartExchange = () => {
   const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}`,
   });
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,15 +31,15 @@ const StartExchange = () => {
 
         const users = usersRes.data;
         setUsers(users);
-        console.log("Users loaded:", users);
-        const allSkills = users.flatMap((user) => user.skillsOffered || []);
-        const uniqueSkills = allSkills.filter(
-          (skillObj, index, self) =>
-            skillObj &&
-            self.findIndex((s) => s.skill === skillObj.skill) === index
-        );
 
-        setSkills(uniqueSkills);
+        const skills = await api.get(`/api/skills/${selectedProvider}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+
+
+        setSkills(skills.data);
       } catch (err) {
         console.error("Error loading data:", err.response?.data || err.message);
       }
@@ -45,6 +47,24 @@ const StartExchange = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      try {
+
+        const skills = await api.get(`/api/skills/${selectedProvider}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        setSkills(skills.data);
+      } catch (err) {
+        console.error("Error loading data:", err.response?.data || err.message);
+      }
+    }
+    fetchData();
+  }, [selectedProvider]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

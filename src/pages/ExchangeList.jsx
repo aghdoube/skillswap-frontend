@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ExchangeCard from "../components/ExchangeCard";
 import StartExchange from "../components/StartExchange";
 
 const ExchangeList = () => {
   const [exchanges, setExchanges] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const userId = location.state?.userId
 
   const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}`,
@@ -87,7 +89,7 @@ const ExchangeList = () => {
   return (
     <div className="container p-4">
       <h2 className="text-xl font-bold mb-4">My Exchanges</h2>
-      <StartExchange />
+      <StartExchange userId={userId} />
 
       {!Array.isArray(exchanges) && <p>Loading exchanges...</p>}
       {Array.isArray(exchanges) && exchanges.length === 0 && <p>No exchanges yet.</p>}
