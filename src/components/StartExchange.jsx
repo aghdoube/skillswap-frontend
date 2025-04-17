@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from 'react-router-dom';
 
 const StartExchange = () => {
   const [skills, setSkills] = useState([]);
@@ -8,6 +9,11 @@ const StartExchange = () => {
   const [selectedProvider, setSelectedProvider] = useState("");
   const [message, setMessage] = useState("");
 
+  const location = useLocation();
+  const targetUserId = location.state?.targetUserId;
+
+  console.log("User to exchange with:", targetUserId);
+
   const api = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}`,
   });
@@ -15,31 +21,41 @@ const StartExchange = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [skillsRes, usersRes] = await Promise.all([
-          api.get("/api/skills"),
-          api.get("/api/auth/profiles", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-          }),
-                  ]);
-        setSkills(skillsRes.data);
-        setUsers(usersRes.data);
+        const usersRes = await api.get("/api/auth/profiles", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+
+        const users = usersRes.data;
+        setUsers(users);
+        console.log("Users loaded:", users);
+        const allSkills = users.flatMap((user) => user.skillsOffered || []);
+        const uniqueSkills = allSkills.filter(
+          (skillObj, index, self) =>
+            skillObj &&
+            self.findIndex((s) => s.skill === skillObj.skill) === index
+        );
+
+        setSkills(uniqueSkills);
       } catch (err) {
-        console.error("Error loading data:", err);
+        console.error("Error loading data:", err.response?.data || err.message);
       }
     };
+
     fetchData();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("All users with skills:", users);
+
       await api.post(
         "/api/exchanges",
         {
-          providerId: selectedProvider,
-          skillId: selectedSkill,
+          provider: selectedProvider,
+          skill: selectedSkill,
         },
         {
           headers: {
@@ -53,6 +69,10 @@ const StartExchange = () => {
       setMessage("Failed to start exchange.");
     }
   };
+  console.log("Submitting exchange:", {
+    providerId: selectedProvider,
+    skillId: selectedSkill,
+  });
 
   return (
     <div className="mb-6">
@@ -84,9 +104,9 @@ const StartExchange = () => {
             required
           >
             <option value="">-- Select Skill --</option>
-            {skills.map((skill) => (
-              <option key={skill._id} value={skill._id}>
-                {skill.title}
+            {skills.map((skillObj) => (
+              <option key={skillObj._id} value={skillObj._id}>
+                {skillObj.skill}
               </option>
             ))}
           </select>

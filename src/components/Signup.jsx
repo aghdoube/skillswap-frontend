@@ -100,7 +100,7 @@ const Signup = () => {
         </form>
         
         <div className="text-center mt-4">
-          <a href="/login" className="text-blue-600 hover:underline">Already have an account? Login</a>
+          <a href="/home" className="text-blue-600 hover:underline">Already have an account? Login</a>
         </div>
       </div>
     </div>

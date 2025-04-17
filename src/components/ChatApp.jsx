@@ -122,47 +122,52 @@ const ChatApp = ({ userId: propUserId }) => {
     const fetchMessages = async () => {
       try {
         const token = localStorage.getItem("authToken");
-
+    
         if (!token) {
           setError("Authentication token not found. Please log in again.");
           return;
         }
-
-        const res = await axios.get("`${import.meta.env.VITE_API_URL}/api/messages", {
+    
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/messages`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        const convo = res.data.filter(
+    
+        const allMessages = Array.isArray(res.data) ? res.data : res.data.messages || [];
+    
+        const convo = allMessages.filter(
           (msg) =>
             (msg.sender._id === userId && msg.receiver._id === receiverId) ||
             (msg.sender._id === receiverId && msg.receiver._id === userId)
         );
-
-        setMessages(convo);
-
-        convo.forEach((message) => {
-          if (
-            message.receiver &&
-            message.receiver._id === userId &&
-            !message.read
-          ) {
-            markMessageAsRead(message._id);
-            console.log(message);
+    
+        if (convo.length === 0) {
+          setError("No messages yet. Say hello 👋");
+        } else {
+          setError(null); // clear error
+          setMessages(convo);
+    
+          convo.forEach((message) => {
+            if (
+              message.receiver &&
+              message.receiver._id === userId &&
+              !message.read
+            ) {
+              markMessageAsRead(message._id);
+            }
+          });
+    
+          if (messageInputRef.current) {
+            messageInputRef.current.focus();
           }
-        });
-
-        if (messageInputRef.current) {
-          messageInputRef.current.focus();
         }
       } catch (err) {
         console.error("Error fetching messages:", err);
-        setError("Failed to load messages");
+        setError("Failed to load messages. Please try again later.");
       }
     };
-
-    fetchMessages();
+    
 
     const handleReceiveMessage = (message) => {
       if (

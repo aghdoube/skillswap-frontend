@@ -44,7 +44,7 @@ function AppRoutes() {
 
   return (
     <>
-      {location.pathname !== "/" && <Navbar />}
+{!["/", "/login", "/signup"].includes(location.pathname) && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
