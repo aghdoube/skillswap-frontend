@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "sonner";
+import '../App.css'
+
 
 export default function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -10,6 +13,7 @@ export default function LoginForm() {
   
   const onSubmit = async (data) => {
     console.log("Login Data:", data);
+   
     
     setError("");
     
@@ -20,7 +24,20 @@ export default function LoginForm() {
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("userName", response.data.name);
       localStorage.setItem("userId", response.data._id);
+      toast.success(`Welcome back, ${response.data.name}!`, {
+        style: {
+          backgroundImage: "linear-gradient(135deg, #3b82f6, #8b5cf6)", 
+          color: "#ffffff",
+          fontWeight: "bold",
+          borderRadius: "12px",
+          textAlign: "center",
+        },
+        position: "bottom-center", 
+      });
       
+      
+      
+            
       try {
         const profileResponse = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/auth/profile`, 

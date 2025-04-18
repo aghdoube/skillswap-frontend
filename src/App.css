@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+.my-welcome-toast {
+  background-color: #0f172a; 
+  color: #b3a923;            
+  font-weight: bold;
+  border-radius: 12px;
+}

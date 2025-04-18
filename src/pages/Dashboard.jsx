@@ -47,20 +47,18 @@ const Dashboard = () => {
         response.data.forEach(user => {
           if (user.location) locations.add(user.location);
   
-          // Check if skillsOffered exists and is an array
           if (user.skillsOffered) {
             user.skillsOffered.forEach(skillObj => {
               if (skillObj.skill && skillObj.skill.name) {
-                skills.add(skillObj.skill.name);  // Only add the name if it exists
+                skills.add(skillObj.skill.name);  
               }
             });
           }
   
-          // Check if skillsWanted exists and is an array
           if (user.skillsWanted) {
             user.skillsWanted.forEach(skillObj => {
               if (skillObj.skill && skillObj.skill.name) {
-                skills.add(skillObj.skill.name);  // Only add the name if it exists
+                skills.add(skillObj.skill.name);  
               }
             });
           }
@@ -191,23 +189,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="flex-1">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Briefcase size={18} className="text-gray-500" />
-              </div>
-              <select
-                value={skillFilter}
-                onChange={(e) => setSkillFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">All Skills</option>
-                {availableSkills.map((skill, index) => (
-                  <option key={index} value={skill}>{skill}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+          
 
           <div className="flex-1">
             <div className="relative">

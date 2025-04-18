@@ -1,15 +1,32 @@
 import React, { useState } from "react";
 import ProfileEditForm from "../components/ProfileEditForm";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const [activeSection, setActiveSection] = useState("profile");
+    const navigate = useNavigate();
+  
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
   };
 
+  const handleGoBack = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="container mx-auto p-6">
+       <div className="w-full flex items-center mb-6">
+     <button
+  onClick={handleGoBack}
+  className="flex items-center gap-1 text-sm text-gray-400 hover:text-white px-2 py-1 hover:bg-gray-700 rounded-md transition-colors duration-150"
+>
+  <span className="text-base">←</span>
+  <span>Back to Dashboard</span>
+</button>
+
+</div>
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">Settings</h1>
 
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 mb-8">

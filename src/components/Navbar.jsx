@@ -35,7 +35,7 @@ const Navbar = () => {
             My Profile
           </Link>
           <Link to="/exchanges" className="hover:text-gray-200">
-            Match Me
+            Exchange
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings
@@ -77,7 +77,7 @@ const Navbar = () => {
             My Profile
           </Link>
           <Link to="/exchanges" className="hover:text-gray-200">
-            Match Me
+            Exchange
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings

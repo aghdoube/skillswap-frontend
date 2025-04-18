@@ -104,17 +104,13 @@ const ProfileCard = ({ user }) => {
     }
   };
 
-  const truncateBio = (text, wordLimit = 20) => {
-    if (!text) return "";
-    const words = text.split(" ");
-    if (words.length <= wordLimit) return text;
-    return words.slice(0, wordLimit).join(" ") + "...";
-  };
+
+  
 
   return (
-    <div className="w-full max-w-md bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
+    <div className="w-full max-w-sm bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
       <div className="relative">
-        <div className="h-32 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+        <div className="h-22 bg-gradient-to-r from-blue-600 to-purple-600"></div>
 
         <div className="absolute -bottom-12 inset-x-0 flex justify-center">
           <div className="ring-4 ring-white rounded-full">
@@ -145,15 +141,11 @@ const ProfileCard = ({ user }) => {
           )}
         </div>
 
-        {bio && (
-          <div className="mb-6 text-center">
-            <p className="text-gray-600 text-sm">{truncateBio(bio, 20)}</p>
-          </div>
-        )}
+        
 
         <div className="space-y-4">
           {skillsOffered && skillsOffered.length > 0 && (
-            <div className="bg-blue-50 rounded-lg p-4">
+            <div className=" rounded-lg p-4" style={{ backgroundColor: "#eef2fe" }}>
               <div className="flex items-center mb-2">
                 <Award size={18} className="text-blue-600 mr-2" />
                 <h3 className="font-semibold text-blue-800">Skills Offered</h3>
@@ -182,7 +174,7 @@ const ProfileCard = ({ user }) => {
           )}
 
           {skillsWanted && skillsWanted.length > 0 && (
-            <div className="bg-purple-50 rounded-lg p-4">
+            <div className=" rounded-lg p-4" style={{ backgroundColor: "#fbf5ff" }}>
               <div className="flex items-center mb-2">
                 <Book size={18} className="text-purple-600 mr-2" />
                 <h3 className="font-semibold text-purple-800">Skills Wanted</h3>
@@ -255,7 +247,7 @@ const ProfileCard = ({ user }) => {
 
           <button
             onClick={() => navigate(`/exchanges`, { state: { userId: _id } })}
-            className="bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg transition flex items-center justify-center"
+            className="bg-purple-400 hover:bg-purple-500 text-white rounded-lg transition flex items-center justify-center"
             title="Start Exchange"
           >
             <ArrowRightCircle size={20} />

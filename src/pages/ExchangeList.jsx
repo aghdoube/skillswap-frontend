@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "sonner";
+
+
 import { useNavigate, useLocation } from "react-router-dom";
 import ExchangeCard from "../components/ExchangeCard";
 import StartExchange from "../components/StartExchange";
@@ -52,6 +55,10 @@ const ExchangeList = () => {
     navigate(`/messages/${receiverId}`);
   };
 
+  const handleGoBack = () => {
+    navigate("/dashboard");
+  };
+
   const handleAccept = async (exchangeId) => {
     try {
       await api.put(
@@ -81,6 +88,7 @@ const ExchangeList = () => {
         }
       );
       window.location.reload();
+       
     } catch (error) {
       console.error("Decline failed:", error);
     }
@@ -88,7 +96,20 @@ const ExchangeList = () => {
 
   return (
     <div className="container p-4">
-      <h2 className="text-xl font-bold mb-4">My Exchanges</h2>
+
+<div className="w-full flex items-center mb-6">
+     <button
+  onClick={handleGoBack}
+  className="flex items-center gap-1 text-sm text-gray-400 hover:text-white px-2 py-1 hover:bg-gray-700 rounded-md transition-colors duration-150"
+>
+  <span className="text-base">←</span>
+  <span>Back to Dashboard</span>
+</button>
+
+</div>
+<h2 className="text-4xl font-extrabold mb-6 text-gray-800 text-center mt-16">
+  My Exchanges
+</h2>
       <StartExchange userId={userId} />
 
       {!Array.isArray(exchanges) && <p>Loading exchanges...</p>}

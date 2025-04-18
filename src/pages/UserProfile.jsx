@@ -37,13 +37,14 @@ const UserProfile = () => {
         );
 
         const profileData = response.data;
+
         if (profileData) {
           setProfile({
             username: profileData.username || "",
             email: profileData.email || "",
             bio: profileData.bio || "No bio available",
             location: profileData.location || "Location not specified",
-            profilePicUrl: profileData.profilePicUrl || "/default-avatar.png",
+            profilePicUrl: profileData.profilePic || "",
             skillsOffered: profileData.skillsOffered || [],
             skillsWanted: profileData.skillsWanted || [],
           });
@@ -86,24 +87,44 @@ const UserProfile = () => {
     );
   }
 
+  const handleGoBack = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
+      <div className="w-full flex items-center mb-6">
+        <button
+          onClick={handleGoBack}
+          className="flex items-center gap-1 text-sm text-gray-400 hover:text-white px-2 py-1 hover:bg-gray-700 rounded-md transition-colors duration-150"
+        >
+          <span className="text-base">←</span>
+          <span>Back to Dashboard</span>
+        </button>
+      </div>
       <div className="container mx-auto px-4">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto">
-          <div className="bg-blue-600 p-6 flex flex-col md:flex-row items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 flex flex-col md:flex-row items-center justify-between">
             <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-              <img
-                src={
-                  profile.profilePicUrl
-                    ? `${import.meta.env.VITE_API_URL}${profile.profilePicUrl}`
-                    : defaultProfilePic
-                }
-                alt="Profile"
-                className="w-24 h-24 rounded-full border-4 border-white object-cover"
-                onError={(e) => {
-                  e.target.src = defaultProfilePic;
-                }}
-              />
+              <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-r from-pink-500  to-purple-800">
+                <img
+                  src={
+                    profile.profilePicUrl
+                      ? profile.profilePicUrl.includes("http")
+                        ? profile.profilePicUrl
+                        : `${
+                            import.meta.env.VITE_API_URL
+                          }/${profile.profilePicUrl.replace(/^\//, "")}`
+                      : defaultProfilePic
+                  }
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                  onError={(e) => {
+                    console.error("Error loading profile image:", e.target.src);
+                    e.target.src = defaultProfilePic;
+                  }}
+                />
+              </div>
 
               <div className="md:ml-6 text-center md:text-left mt-4 md:mt-0">
                 <h1 className="text-2xl font-bold text-white">
@@ -119,9 +140,9 @@ const UserProfile = () => {
             <div>
               <button
                 onClick={() => navigate("/settings")}
-                className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition"
+                className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium  hover:text-purple-800 transition"
               >
-                Edit Profile
+                Update Info{" "}
               </button>
             </div>
           </div>
@@ -150,17 +171,23 @@ const UserProfile = () => {
                           </span>
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-semibold 
-                            ${
-                              skill.level === "Beginner"
-                                ? "bg-green-100 text-green-800"
-                                : skill.level === "Intermediate"
-                                ? "bg-blue-100 text-blue-800"
-                                : skill.level === "Advanced"
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
+                      ${
+                        skill.level === "1"
+                          ? "bg-green-100 text-green-800"
+                          : skill.level === "2"
+                          ? "bg-blue-100 text-blue-800"
+                          : skill.level === "3"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
                           >
-                            {skill.level}
+                            {skill.level === "1"
+                              ? "Beginner"
+                              : skill.level === "2"
+                              ? "Intermediate"
+                              : skill.level === "3"
+                              ? "Advanced"
+                              : "Expert"}
                           </span>
                         </div>
                       </div>

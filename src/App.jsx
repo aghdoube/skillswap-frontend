@@ -1,4 +1,5 @@
 import React from "react";
+import { Toaster } from "sonner";
 import {
   BrowserRouter as Router,
   Routes,
@@ -44,8 +45,9 @@ function AppRoutes() {
 
   return (
     <>
-{!["/", "/login", "/signup"].includes(location.pathname) && <Navbar />}
-
+      {!["/", "/login", "/signup"].includes(location.pathname) && <Navbar />}
+      
+      <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />

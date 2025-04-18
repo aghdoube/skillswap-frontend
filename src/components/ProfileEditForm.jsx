@@ -193,7 +193,6 @@ const ProfileEditForm = () => {
       )}
       
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Profile Section */}
         <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
           <div className="flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
             <div className="flex-shrink-0">
@@ -312,7 +311,6 @@ const ProfileEditForm = () => {
           </div>
         </div>
         
-        {/* Skills Offered Section */}
         <div className="border-t border-gray-100 pt-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-800">Skills You Can Offer</h3>
@@ -391,7 +389,6 @@ const ProfileEditForm = () => {
           </button>
         </div>
         
-        {/* Skills Wanted Section */}
         <div className="border-t border-gray-100 pt-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-800">Skills You Want to Learn</h3>
@@ -470,7 +467,6 @@ const ProfileEditForm = () => {
           </button>
         </div>
         
-        {/* Submit Button */}
         <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row-reverse gap-4">
           <button
             type="submit"

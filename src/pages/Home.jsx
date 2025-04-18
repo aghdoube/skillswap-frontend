@@ -1,6 +1,7 @@
 import React from "react";
 import Footer from "../components/Footer";
 import LoginForm from "../components/LoginForm";
+import { Toaster } from "sonner";
 
 export default function Home() {
   return (
