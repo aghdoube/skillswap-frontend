@@ -1,6 +1,8 @@
 # SkillSwap
+![Skillswap0](https://github.com/user-attachments/assets/bb39bdef-b4f8-45fd-ad7b-a35ea2f2886e)
 
-![SkillSwap Logo](./public/logo.png)
+![SkillSwap Logo](./public/logo.png)![SkillSwap](https://github.com/user-attachments/assets/789c9bcb-476c-4613-80bb-2c8207d635f3)
+
 
 ## 📚 Overview
 
