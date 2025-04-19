@@ -230,7 +230,7 @@ const ProfileCard = ({ user }) => {
       <div className="mt-auto grid grid-cols-3 gap-2 mb-4 px-6">
         <button
           onClick={handleViewProfile}
-          className="col-span-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center"
+          className="col-span-2 text-white bg-gradient-to-r from-pink-400 to-purple-400 hover:bg-blue-700 font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center"
         >
           View Profile
           <ChevronRight size={16} className="ml-1" />
@@ -239,7 +239,7 @@ const ProfileCard = ({ user }) => {
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={handleMessageUser}
-            className="bg-green-600 hover:bg-green-700 text-white rounded-lg transition flex items-center justify-center"
+            className="bg-blue-400 hover:bg-blue-700 text-white rounded-lg transition flex items-center justify-center"
             title="Message"
           >
             <MessageCircle size={20} />

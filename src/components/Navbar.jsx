@@ -20,12 +20,11 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         
         <div className="flex items-center">
-        <Link to="/" className="text-white text-2xl font-semibold flex items-center gap-2">
-  
-  <Globe size={24} className="text-white" /> {/* Globe icon */}
-  SkillSwap
-  <Handshake size={24} className="text-white" /> {/* Handshake icon */}
-</Link>
+          <Link to="/" className="text-white text-2xl font-semibold flex items-center gap-2">
+            <Globe size={24} className="text-white" />
+            SkillSwap
+            <Handshake size={24} className="text-white" />
+          </Link>
         </div>
 
         <div className="hidden md:flex space-x-6 text-white">
@@ -43,6 +42,9 @@ const Navbar = () => {
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings
+          </Link>
+          <Link to="/qanda" className="hover:text-gray-200"> 
+            Q&A
           </Link>
           <Link to="/messages" className="hover:text-gray-200">
             <i className="fas fa-comments" />
@@ -85,6 +87,9 @@ const Navbar = () => {
           </Link>
           <Link to="/settings" className="hover:text-gray-200">
             Settings
+          </Link>
+          <Link to="/qanda" className="hover:text-gray-200"> 
+            Q&A
           </Link>
           <Link to="/messages" className="hover:text-gray-200">
             <i className="fas fa-comments" />

@@ -433,7 +433,7 @@ const ReviewPage = ({ userId = "123" }) => {
 
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                   >
                     Submit Review
                   </button>
@@ -504,7 +504,7 @@ const ReviewPage = ({ userId = "123" }) => {
                           </div>
                         </div>
                         <div className="flex text-sm">
-                          <div className="px-2 py-1 bg-blue-100 text-gray-600 rounded-md flex items-center">
+                          <div className="px-2 py-1 bg-purple-100 text-gray-600 rounded-md flex items-center">
                             <span>Skills Exchanged:</span>
                             <span className="ml-1">
                               {review.skillsExchanged.join(" ↔ ")}

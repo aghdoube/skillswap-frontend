@@ -2,7 +2,7 @@ import React from "react";
 import { Twitter, Linkedin, Instagram } from "lucide-react";
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 border-t text-gray-700 text-sm py-10 px-6">
+    <footer className="bg-gray-100 border-t text-gray-700 text-sm py-10 px-6 mt-20">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-left">
         <div>
           <h4 className="text-md font-semibold mb-2">About SkillSwap</h4>

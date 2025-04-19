@@ -188,7 +188,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-semibold text-lg transition-transform duration-300 hover:scale-105 shadow-md flex items-center justify-center"
+            className="w-full bg-gradient-to-r text-white bg-gradient-to-r from-pink-400 to-purple-400  py-4 rounded-lg font-semibold text-lg transition-transform duration-300 hover:scale-105 shadow-md flex items-center justify-center"
             disabled={isLoading}
           >
             {isLoading ? "Creating Account..." : "Sign Up"}

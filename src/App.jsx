@@ -20,6 +20,7 @@ import BuzzFeed from "./pages/BuzzFeed";
 import Footer from "./components/Footer";
 import ChatApp from "./components/ChatApp";
 import ExchangeList from "./pages/ExchangeList";
+import QandA from "./pages/QandA";
 
 function App() {
   return (
@@ -117,6 +118,15 @@ function AppRoutes() {
             </ProtectedRoute>
           }
         />
+
+<Route
+  path="/qanda"
+  element={
+    <ProtectedRoute>
+      <QandA />
+    </ProtectedRoute>
+  }
+/> 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 

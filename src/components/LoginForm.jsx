@@ -202,7 +202,7 @@ export default function LoginForm() {
       
       <div className="mt-6 text-center">
         <p className="text-gray-600 mb-4">New to SkillSwap?</p>
-        <Link to="/signup" className="block w-full bg-gradient-to-r from-blue-300 to-blue-900 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:opacity-95 transition-all duration-300 shadow-md">
+        <Link to="/signup" className="block w-full text-white bg-gradient-to-r from-pink-400 to-purple-400  py-4 px-6 rounded-lg text-lg font-semibold hover:opacity-95 transition-all duration-300 shadow-md">
           Sign up 
         </Link>
       </div>

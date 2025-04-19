@@ -392,18 +392,18 @@ const ProfileEditForm = () => {
         <div className="border-t border-gray-100 pt-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-semibold text-gray-800">Skills You Want to Learn</h3>
-            <span className="bg-emerald-100 text-emerald-700 text-xs font-medium px-2.5 py-0.5 rounded">Learning</span>
+            <span className="bg-pink-100 text-pink-700 text-xs font-medium px-2.5 py-0.5 rounded">Learning</span>
           </div>
           
           {formData.skillsWanted.map((skill, index) => (
-            <div key={`wanted-${index}`} className="mb-6 p-5 bg-emerald-50 bg-opacity-50 rounded-lg border border-emerald-100">
-              <div className="flex items-start justify-between">
-                <h4 className="text-sm font-medium text-emerald-800 mb-3">Skill #{index + 1}</h4>
+            <div key={`wanted-${index}`} className="mb-6 p-5 bg-[#fbf5ff] rounded-lg border border-emerald-100">
+            <div className="flex items-start justify-between">
+                <h4 className="text-sm font-medium text-pink-800 mb-3">Skill #{index + 1}</h4>
                 {formData.skillsWanted.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeSkill(index, "skillsWanted")}
-                    className="text-emerald-600 hover:text-emerald-800 flex items-center text-sm"
+                    className="text-pink-600 hover:text-pink-800 flex items-center text-sm"
                   >
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -420,7 +420,7 @@ const ProfileEditForm = () => {
                     type="text"
                     value={skill.skill}
                     onChange={(e) => handleSkillChange(index, "skill", e.target.value, "skillsWanted")}
-                    className="w-full px-4 py-3 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
+                    className="w-full px-4 py-3 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                     placeholder="What skill do you want to learn?"
                     required
                   />
@@ -431,7 +431,7 @@ const ProfileEditForm = () => {
                   <select
                     value={skill.level}
                     onChange={(e) => handleSkillChange(index, "level", parseInt(e.target.value), "skillsWanted")}
-                    className="w-full px-4 py-3 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
+                    className="w-full px-4 py-3 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                   >
                     {skillLevels.map((level) => (
                       <option key={`wanted-level-${level.value}`} value={level.value}>
@@ -446,7 +446,7 @@ const ProfileEditForm = () => {
                   <textarea
                     value={skill.description || ""}
                     onChange={(e) => handleSkillChange(index, "description", e.target.value, "skillsWanted")}
-                    className="w-full px-4 py-3 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
+                    className="w-full px-4 py-3 border border-pink-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition"
                     rows="2"
                     placeholder="Describe what aspects of this skill you want to learn"
                   />
@@ -458,8 +458,8 @@ const ProfileEditForm = () => {
           <button
             type="button"
             onClick={() => addSkill("skillsWanted")}
-            className="flex items-center text-emerald-600 hover:text-emerald-800 py-2 px-4 border border-dashed border-emerald-300 rounded-lg hover:bg-emerald-50 transition"
-          >
+            className="flex items-center text-pink-600 hover:text-pink-800 py-2 px-4 border border-dashed border-pink-300 rounded-lg hover:bg-[#fbf5ff] transition"
+            >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 00-1 1v5H4a1 1 0 100 2h5v5a1 1 0 102 0v-5h5a1 1 0 100-2h-5V4a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
@@ -470,7 +470,7 @@ const ProfileEditForm = () => {
         <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row-reverse gap-4">
           <button
             type="submit"
-            className="bg-blue-600 text-white py-3 px-6 rounded-lg text-base font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm transition"
+            className="text-white bg-gradient-to-r from-pink-400 to-purple-400 py-3 px-6 rounded-lg text-base font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm transition"
           >
             Save Profile
           </button>

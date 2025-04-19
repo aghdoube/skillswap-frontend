@@ -16,6 +16,7 @@ const UserProfile = () => {
     profilePicUrl: "",
     skillsOffered: [],
     skillsWanted: [],
+
   });
 
   useEffect(() => {
@@ -60,6 +61,67 @@ const UserProfile = () => {
     fetchProfileData();
   }, [navigate]);
 
+  const renderSkills = (skills, type) => {
+    return skills && skills.length > 0 ? (
+      <div className="space-y-3">
+        {skills.map((skill, index) => {
+          const skillLevel = String(skill.level || "Unknown");
+          let levelText = "";
+          let levelClass = "";
+
+          switch (skillLevel) {
+            case "1":
+              levelText = "Beginner";
+              levelClass = "bg-green-100 text-green-800";
+              break;
+            case "2":
+              levelText = "Basic";
+              levelClass = "bg-yellow-100 text-yellow-800";
+              break;
+            case "3":
+              levelText = "Intermediate";
+              levelClass = "bg-blue-100 text-blue-800";
+              break;
+            case "4":
+              levelText = "Advanced";
+              levelClass = "bg-purple-100 text-purple-800";
+              break;
+            case "5":
+              levelText = "Expert";
+              levelClass = "bg-red-100 text-red-800";
+              break;
+            default:
+              levelText = "Unknown";
+              levelClass = "bg-gray-100 text-gray-800";
+              break;
+          }
+
+          return (
+            <div key={`${type}-${index}`} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+              <div className="flex justify-between items-center">
+<div>
+  <div className="font-medium text-gray-700">{skill.skill}</div>
+  {skill.description && (
+    <div className="text-gray-500 text-sm mt-1">{skill.description}</div>
+  )}
+</div>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${levelClass}`}>
+                  {levelText}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    ) : (
+      <p className="text-gray-500 italic">No skills listed yet</p>
+    );
+  };
+
+  const handleGoBack = () => {
+    navigate("/dashboard");
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -87,10 +149,6 @@ const UserProfile = () => {
     );
   }
 
-  const handleGoBack = () => {
-    navigate("/dashboard");
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="w-full flex items-center mb-6">
@@ -106,15 +164,13 @@ const UserProfile = () => {
         <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 flex flex-col md:flex-row items-center justify-between">
             <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-              <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-r from-pink-500  to-purple-800">
+              <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-r from-pink-500 to-purple-800">
                 <img
                   src={
                     profile.profilePicUrl
                       ? profile.profilePicUrl.includes("http")
                         ? profile.profilePicUrl
-                        : `${
-                            import.meta.env.VITE_API_URL
-                          }/${profile.profilePicUrl.replace(/^\//, "")}`
+                        : `${import.meta.env.VITE_API_URL}/${profile.profilePicUrl.replace(/^\//, "")}`
                       : defaultProfilePic
                   }
                   alt="Profile"
@@ -127,22 +183,19 @@ const UserProfile = () => {
               </div>
 
               <div className="md:ml-6 text-center md:text-left mt-4 md:mt-0">
-                <h1 className="text-2xl font-bold text-white">
-                  {profile.username}
-                </h1>
+                <h1 className="text-2xl font-bold text-white">{profile.username}</h1>
                 <p className="text-blue-100">{profile.email}</p>
                 <p className="text-blue-100 flex items-center mt-1">
-                  <i className="fas fa-map-marker-alt mr-2"></i>{" "}
-                  {profile.location}
+                  <i className="fas fa-map-marker-alt mr-2"></i> {profile.location}
                 </p>
               </div>
             </div>
             <div>
               <button
                 onClick={() => navigate("/settings")}
-                className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium  hover:text-purple-800 transition"
+                className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:text-purple-800 transition"
               >
-                Update Info{" "}
+                Update Info
               </button>
             </div>
           </div>
@@ -158,82 +211,14 @@ const UserProfile = () => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Skills I Can Teach
                 </h2>
-                {profile.skillsOffered && profile.skillsOffered.length > 0 ? (
-                  <div className="space-y-3">
-                    {profile.skillsOffered.map((skill, index) => (
-                      <div
-                        key={`offered-${index}`}
-                        className="bg-gray-50 p-3 rounded-lg border border-gray-200"
-                      >
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-gray-700">
-                            {skill.skill}
-                          </span>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold 
-                      ${
-                        skill.level === "1"
-                          ? "bg-green-100 text-green-800"
-                          : skill.level === "2"
-                          ? "bg-blue-100 text-blue-800"
-                          : skill.level === "3"
-                          ? "bg-purple-100 text-purple-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                          >
-                            {skill.level === "1"
-                              ? "Beginner"
-                              : skill.level === "2"
-                              ? "Intermediate"
-                              : skill.level === "3"
-                              ? "Advanced"
-                              : "Expert"}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 italic">No skills listed yet</p>
-                )}
+                {renderSkills(profile.skillsOffered, "offered")}
               </div>
 
               <div>
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Skills I Want to Learn
                 </h2>
-                {profile.skillsWanted && profile.skillsWanted.length > 0 ? (
-                  <div className="space-y-3">
-                    {profile.skillsWanted.map((skill, index) => (
-                      <div
-                        key={`wanted-${index}`}
-                        className="bg-gray-50 p-3 rounded-lg border border-gray-200"
-                      >
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-gray-700">
-                            {skill.skill}
-                          </span>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold 
-                            ${
-                              skill.level === "Beginner"
-                                ? "bg-green-100 text-green-800"
-                                : skill.level === "Intermediate"
-                                ? "bg-blue-100 text-blue-800"
-                                : skill.level === "Advanced"
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {skill.level}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 italic">No skills listed yet</p>
-                )}
+                {renderSkills(profile.skillsWanted, "wanted")}
               </div>
             </div>
           </div>
