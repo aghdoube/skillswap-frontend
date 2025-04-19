@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import NotificationDropdown from './NotificationDropdown';
+import { Handshake, Globe } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,9 +20,12 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         
         <div className="flex items-center">
-          <Link to="/" className="text-white text-2xl font-semibold">
-            SkillSwap
-          </Link>
+        <Link to="/" className="text-white text-2xl font-semibold flex items-center gap-2">
+  
+  <Globe size={24} className="text-white" /> {/* Globe icon */}
+  SkillSwap
+  <Handshake size={24} className="text-white" /> {/* Handshake icon */}
+</Link>
         </div>
 
         <div className="hidden md:flex space-x-6 text-white">
