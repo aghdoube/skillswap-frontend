@@ -46,6 +46,7 @@ const ExchangeCard = ({
     Pending: { color: "bg-amber-100 text-amber-800", icon: "⏳" },
     Accepted: { color: "bg-green-100 text-green-800", icon: "✓" },
     Declined: { color: "bg-red-100 text-red-800", icon: "✕" },
+    Cancelled: { color: "bg-red-200 text-red-800", icon: "❌" },
     Unknown: { color: "bg-gray-100 text-gray-800", icon: "?" }
   };
 

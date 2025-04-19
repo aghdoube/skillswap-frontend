@@ -94,7 +94,7 @@ const StartExchange = ({ userId = undefined }) => {
           borderRadius: "12px",
           textAlign: "center",
         },
-        position: "bottom-center",
+        position: "top-center",
       });
     } catch (err) {
       console.error("Failed to start exchange:", err);
@@ -108,7 +108,7 @@ const StartExchange = ({ userId = undefined }) => {
           borderRadius: "12px",
           textAlign: "center",
         },
-        position: "bottom-center",
+        position: "top-center",
       });
     } finally {
       setIsLoading(false);
